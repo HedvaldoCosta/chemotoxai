@@ -122,10 +122,10 @@ if 'pacientes' not in st.session_state:
             "medicamentos": "Doxorrubicina 50 mg/m², Ciclofosfamida 500 mg/m²",
             "evolucao": "S1: Náusea leve (Grau 1), fadiga (Grau 2); S2: Neutropenia (Grau 3); S3: Melhor resposta após redução de dose",
             "info_medicas": "O paciente encontra-se no 3º ciclo de quimioterapia, apresentando fadiga moderada e episódios ocasionais de náusea.",
-            "queixa_principal": "Dor lombar e no quadril.",
-            "historia_doenca_atual": "Paciente relata dores nas costas recorrentes e progressivas há cerca de 20 a 30 anos. Piora nos últimos 10-15 anos, principalmente após a menopausa e ganho de aproximadamente 18 kg.",
+            "queixa_principal": "Fadiga moderada, falta de ar aos esforços e náusea.",
+            "historia_doenca_atual": "Paciente relata fadiga moderada, falta de ar aos esforços e náuseas há cerca de 2 meses.",
             "antecedentes_pessoais": "Dislipidemia (DLP).",
-            "antecedentes_familiares": "Artrose.",
+            "antecedentes_familiares": "Câncer de próstata no pai.",
             "historico_cirurgico": "Amigdalectomia, Histerectomia, Apendicectomia.",
             "habitos": "Ex-tabagista, parou de fumar em 2008. Realiza exercícios 2x por semana."
         },
