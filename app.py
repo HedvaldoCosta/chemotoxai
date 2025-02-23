@@ -5,18 +5,19 @@ from fpdf import FPDF
 import pandas as pd
 
 # Função para gerar PDF
-def gerar_pdf(nome, cpf, idade, sexo, medicamentos, evolucao, info_medicas, recomendacoes):
+def gerar_pdf(nome, cpf, idade, sexo, medicamentos, evolucao, info_medicas, recomendacoes, queixa_principal, historia_doenca_atual, antecedentes_pessoais, antecedentes_familiares, historico_cirurgico, habitos):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     pdf.set_font("Arial", style='', size=12)
 
+    # Título
     pdf.cell(200, 10, "Relatório Médico", ln=True, align='C')
     pdf.ln(10)
 
+    # Dados do Paciente
     pdf.set_font("Arial", style='B', size=12)
     pdf.cell(200, 10, "Dados do Paciente:", ln=True)
-
     pdf.set_font("Arial", size=12)
     pdf.cell(200, 10, f"Nome: {nome}", ln=True)
     pdf.cell(200, 10, f"CPF: {cpf}", ln=True)
@@ -24,24 +25,70 @@ def gerar_pdf(nome, cpf, idade, sexo, medicamentos, evolucao, info_medicas, reco
     pdf.cell(200, 10, f"Sexo: {sexo}", ln=True)
     pdf.ln(5)
 
+    # Queixa Principal
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, "1. Queixa Principal (QD):", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, queixa_principal)
+    pdf.ln(5)
+
+    # História da Doença Atual
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, "2. História da Doença Atual (HPMA):", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, historia_doenca_atual)
+    pdf.ln(5)
+
+    # Antecedentes Pessoais / Comorbidades
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, "3. Antecedentes Pessoais / Comorbidades:", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, antecedentes_pessoais)
+    pdf.ln(5)
+
+    # Antecedentes Familiares
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, "4. Antecedentes Familiares:", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, antecedentes_familiares)
+    pdf.ln(5)
+
+    # Histórico Cirúrgico
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, "5. Histórico Cirúrgico:", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, historico_cirurgico)
+    pdf.ln(5)
+
+    # Hábitos
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, "6. Hábitos:", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, habitos)
+    pdf.ln(5)
+
+    # Medicamentos
     pdf.set_font("Arial", style='B', size=12)
     pdf.cell(200, 10, "Medicamentos:", ln=True)
     pdf.set_font("Arial", size=12)
     pdf.multi_cell(0, 10, medicamentos)
     pdf.ln(5)
 
+    # Evolução do Tratamento
     pdf.set_font("Arial", style='B', size=12)
     pdf.cell(200, 10, "Evoluções do tratamento:", ln=True)
     pdf.set_font("Arial", size=12)
     pdf.multi_cell(0, 10, evolucao)
     pdf.ln(5)
 
+    # Informações Médicas
     pdf.set_font("Arial", style='B', size=12)
     pdf.cell(200, 10, "Informações Médicas:", ln=True)
     pdf.set_font("Arial", size=12)
     pdf.multi_cell(0, 10, info_medicas)
     pdf.ln(5)
 
+    # Recomendações
     pdf.set_font("Arial", style='B', size=12)
     pdf.cell(200, 10, "Recomendações:", ln=True)
     pdf.set_font("Arial", size=12)
@@ -67,20 +114,81 @@ tokenizer, model = load_model()
 # Inicializar o estado de sessão
 if 'pacientes' not in st.session_state:
     st.session_state.pacientes = [
-        {"nome": "João Silva", "cpf": "123.456.789-00", "idade": 45, "sexo": "Masculino",
-         "medicamentos": "Doxorrubicina 50 mg/m², Ciclofosfamida 500 mg/²",
-         "evolucao": "S1: Náusea leve (Grau 1), fadiga (Grau 2); S2: Neutropenia (Grau 3); S3: Melhor resposta após redução de dose",
-         "info_medicas": "O paciente encontra-se no 3º ciclo de quimioterapia, apresentando fadiga moderada e episódios ocasionais de náusea."},
-
-        {"nome": "Maria Oliveira", "cpf": "987.654.321-00", "idade": 60, "sexo": "Feminino",
-         "medicamentos": "Paclitaxel 175 mg/m², Carboplatina AUC 5",
-         "evolucao": "S1: Reação alérgica leve (Grau 1); S2: Neuropatia periférica leve (Grau 2); S3: Sem novos sintomas",
-         "info_medicas": "A paciente está no 2º ciclo de quimioterapia, apresentando neuropatia periférica leve, sem impacto significativo na funcionalidade."},
-
-        {"nome": "Carlos Souza", "cpf": "456.789.123-00", "idade": 50, "sexo": "Masculino",
-         "medicamentos": "Capecitabina 1000 mg/m² 2x/dia",
-         "evolucao": "S1: Diarreia moderada (Grau 2); S2: Lesão oral leve (Grau 1); S3: Sintomas controlados com suporte nutricional",
-         "info_medicas": "O paciente segue para o 4º ciclo de quimioterapia, com sintomas gastrointestinais leves, incluindo diarreia esporádica."}
+        {
+            "nome": "João Silva",
+            "cpf": "123.456.789-00",
+            "idade": 45,
+            "sexo": "Masculino",
+            "medicamentos": "Doxorrubicina 50 mg/m², Ciclofosfamida 500 mg/m²",
+            "evolucao": "S1: Náusea leve (Grau 1), fadiga (Grau 2); S2: Neutropenia (Grau 3); S3: Melhor resposta após redução de dose",
+            "info_medicas": "O paciente encontra-se no 3º ciclo de quimioterapia, apresentando fadiga moderada e episódios ocasionais de náusea.",
+            "queixa_principal": "Dor lombar e no quadril.",
+            "historia_doenca_atual": "Paciente relata dores nas costas recorrentes e progressivas há cerca de 20 a 30 anos. Piora nos últimos 10-15 anos, principalmente após a menopausa e ganho de aproximadamente 18 kg.",
+            "antecedentes_pessoais": "Dislipidemia (DLP).",
+            "antecedentes_familiares": "Artrose.",
+            "historico_cirurgico": "Amigdalectomia, Histerectomia, Apendicectomia.",
+            "habitos": "Ex-tabagista, parou de fumar em 2008. Realiza exercícios 2x por semana."
+        },
+        {
+            "nome": "Maria Oliveira",
+            "cpf": "987.654.321-00",
+            "idade": 60,
+            "sexo": "Feminino",
+            "medicamentos": "Paclitaxel 175 mg/m², Carboplatina AUC 5",
+            "evolucao": "S1: Reação alérgica leve (Grau 1); S2: Neuropatia periférica leve (Grau 2); S3: Sem novos sintomas",
+            "info_medicas": "A paciente está no 2º ciclo de quimioterapia, apresentando neuropatia periférica leve, sem impacto significativo na funcionalidade.",
+            "queixa_principal": "Dor abdominal e náuseas frequentes.",
+            "historia_doenca_atual": "Paciente relata dor abdominal e náuseas há cerca de 6 meses, com piora progressiva. Relata também perda de peso de 5 kg no último mês.",
+            "antecedentes_pessoais": "Hipertensão arterial sistêmica (HAS).",
+            "antecedentes_familiares": "Diabetes mellitus tipo 2.",
+            "historico_cirurgico": "Colecistectomia, Histerectomia.",
+            "habitos": "Não tabagista. Consumo moderado de álcool. Sedentária."
+        },
+        {
+            "nome": "Carlos Souza",
+            "cpf": "456.789.123-00",
+            "idade": 50,
+            "sexo": "Masculino",
+            "medicamentos": "Capecitabina 1000 mg/m² 2x/dia",
+            "evolucao": "S1: Diarreia moderada (Grau 2); S2: Lesão oral leve (Grau 1); S3: Sintomas controlados com suporte nutricional",
+            "info_medicas": "O paciente segue para o 4º ciclo de quimioterapia, com sintomas gastrointestinais leves, incluindo diarreia esporádica.",
+            "queixa_principal": "Fadiga intensa e falta de ar aos esforços.",
+            "historia_doenca_atual": "Paciente relata fadiga intensa e falta de ar aos esforços há cerca de 3 meses. Relata também tosse seca ocasional.",
+            "antecedentes_pessoais": "Diabetes mellitus tipo 2, Insuficiência cardíaca.",
+            "antecedentes_familiares": "Doença coronariana.",
+            "historico_cirurgico": "Revascularização miocárdica, Apendicectomia.",
+            "habitos": "Ex-tabagista, parou de fumar em 2010. Consumo ocasional de álcool. Sedentário."
+        },
+        {
+            "nome": "Ana Clara Santos",
+            "cpf": "111.222.333-44",
+            "idade": 38,
+            "sexo": "Feminino",
+            "medicamentos": "Trastuzumab 8 mg/kg, Pertuzumab 840 mg",
+            "evolucao": "S1: Reação alérgica leve (Grau 1); S2: Sem novos sintomas; S3: Resposta positiva ao tratamento",
+            "info_medicas": "A paciente está no 1º ciclo de terapia alvo, com boa tolerância ao tratamento.",
+            "queixa_principal": "Dor mamária e nódulo palpável.",
+            "historia_doenca_atual": "Paciente relata dor mamária e nódulo palpável há cerca de 2 meses. Realizou mamografia que evidenciou lesão suspeita.",
+            "antecedentes_pessoais": "Nenhum.",
+            "antecedentes_familiares": "Câncer de mama na mãe.",
+            "historico_cirurgico": "Nenhum.",
+            "habitos": "Não tabagista. Consumo ocasional de álcool. Pratica exercícios 3x por semana."
+        },
+        {
+            "nome": "Pedro Henrique Lima",
+            "cpf": "222.333.444-55",
+            "idade": 52,
+            "sexo": "Masculino",
+            "medicamentos": "Cisplatina 75 mg/m², Etoposídeo 100 mg/m²",
+            "evolucao": "S1: Náusea moderada (Grau 2); S2: Neutropenia (Grau 3); S3: Melhora após ajuste de dose",
+            "info_medicas": "O paciente está no 3º ciclo de quimioterapia, com neutropenia controlada e náusea moderada.",
+            "queixa_principal": "Tosse persistente e perda de peso.",
+            "historia_doenca_atual": "Paciente relata tosse persistente há cerca de 4 meses, acompanhada de perda de peso de 8 kg no período.",
+            "antecedentes_pessoais": "Tabagismo (30 anos-maço).",
+            "antecedentes_familiares": "Câncer de pulmão no pai.",
+            "historico_cirurgico": "Nenhum.",
+            "habitos": "Tabagista, fuma 1 maço por dia há 30 anos. Consumo moderado de álcool. Sedentário."
+        }
     ]
 
 if 'paciente_selecionado' not in st.session_state:
@@ -110,10 +218,16 @@ with col1:
             sexo = paciente['sexo']
             medicamentos = paciente['medicamentos']
             evolucao = paciente['evolucao']
-            informacoes_medicas = paciente['info_medicas']
+            info_medicas = paciente['info_medicas']
+            queixa_principal = paciente['queixa_principal']
+            historia_doenca_atual = paciente['historia_doenca_atual']
+            antecedentes_pessoais = paciente['antecedentes_pessoais']
+            antecedentes_familiares = paciente['antecedentes_familiares']
+            historico_cirurgico = paciente['historico_cirurgico']
+            habitos = paciente['habitos']
 
-            if nome.strip() and informacoes_medicas.strip():
-                input_text = f"Paciente: {nome}, Idade: {idade}, Sexo: {sexo}. Histórico: {informacoes_medicas}"
+            if nome.strip() and info_medicas.strip():
+                input_text = f"Paciente: {nome}, Idade: {idade}, Sexo: {sexo}. Histórico: {info_medicas}"
                 inputs = tokenizer(input_text, return_tensors="pt", truncation=True, padding=True, max_length=512)
 
                 with torch.no_grad():
@@ -123,7 +237,7 @@ with col1:
                 top_3_indices = torch.topk(predictions, 3).indices[0].tolist()
                 recomendacoes = [label_map_invertido.get(idx, "Desconhecida") for idx in top_3_indices]
 
-                pdf_bytes = gerar_pdf(nome, cpf, idade, sexo, medicamentos, evolucao, informacoes_medicas, recomendacoes)
+                pdf_bytes = gerar_pdf(nome, cpf, idade, sexo, medicamentos, evolucao, info_medicas, recomendacoes, queixa_principal, historia_doenca_atual, antecedentes_pessoais, antecedentes_familiares, historico_cirurgico, habitos)
                 st.download_button(label="Baixar PDF", data=pdf_bytes, file_name="relatorio_medico.pdf", mime="application/pdf")
             else:
                 st.warning("Por favor, preencha todos os campos obrigatórios.")
@@ -139,7 +253,13 @@ with col2:
         sexo = st.selectbox("Sexo:", ["Masculino", "Feminino", "Outro", "Prefiro não dizer"])
         medicamentos = st.text_area("Medicamentos utilizados:")
         evolucao = st.text_area("Evolução do tratamento:")
-        informacoes_medicas = st.text_area("Informações Médicas:", height=150)
+        info_medicas = st.text_area("Informações Médicas:", height=150)
+        queixa_principal = st.text_area("Queixa Principal (QD):")
+        historia_doenca_atual = st.text_area("História da Doença Atual (HPMA):")
+        antecedentes_pessoais = st.text_area("Antecedentes Pessoais / Comorbidades:")
+        antecedentes_familiares = st.text_area("Antecedentes Familiares:")
+        historico_cirurgico = st.text_area("Histórico Cirúrgico:")
+        habitos = st.text_area("Hábitos:")
 
         if st.button("Salvar Paciente"):
             novo_paciente = {
@@ -149,7 +269,13 @@ with col2:
                 "sexo": sexo,
                 "medicamentos": medicamentos,
                 "evolucao": evolucao,
-                "info_medicas": informacoes_medicas
+                "info_medicas": info_medicas,
+                "queixa_principal": queixa_principal,
+                "historia_doenca_atual": historia_doenca_atual,
+                "antecedentes_pessoais": antecedentes_pessoais,
+                "antecedentes_familiares": antecedentes_familiares,
+                "historico_cirurgico": historico_cirurgico,
+                "habitos": habitos
             }
             st.session_state.pacientes.append(novo_paciente)
             st.success("Paciente adicionado com sucesso!")
